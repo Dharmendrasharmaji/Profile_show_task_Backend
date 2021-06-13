@@ -1,0 +1,34 @@
+
+server:
+  port: 8765
+
+spring:
+  application:
+    name: api-gateway-myservice
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+  serviceUrl:
+    defaultZone: http://localhost:8762/eureka/
+  instance:
+    preferIpAddress: true
+#  cloud:
+#    gateway:
+#      routes:
+#        - id: contacts_route
+#          uri: "lb://contacts-service"
+#          predicates:
+#            - Path=/api/v1/contacts/**
+#        - id: users_route
+#          uri: "lb://users-service"
+#          predicates:
+#            - Path=/api/v1/users/**
+
+jwt:
+  secret:
+    key: secretKey
+
+Accept: application/json
+

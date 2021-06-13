@@ -1,0 +1,21 @@
+
+server:
+  port: 8081
+
+spring:
+  application:
+    name: user-recommendation
+  data:
+    mongodb:
+      database: ${MONGO_DB:userrecom_db}
+      host: ${MONGO_HOST:localhost}
+      port: ${MONGO_PORT:27017}
+
+eureka:
+  client:
+    register-with-eureka: true
+    fetch-registry: true
+  serviceUrl:
+    defaultZone: http://localhost:8762/eureka/
+  instance:
+    preferIpAddress: true
