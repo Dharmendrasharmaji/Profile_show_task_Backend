@@ -28,4 +28,6 @@ public interface UserService {
     void deleteFav(String email,String movieId);
 
     List<TMDBMovies> getTrending(String userEmail);
+
+    List<TMDBMovies> getSearchedMovie(TMDBData searchedMovie, String email,String title);
 }

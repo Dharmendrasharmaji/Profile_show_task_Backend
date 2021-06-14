@@ -238,4 +238,46 @@ public class UserServiceImpl implements UserService{
         }
         return new ArrayList<>();
     }
+
+    @Override
+    public List<TMDBMovies> getSearchedMovie(TMDBData searchedMovies, String email,String title) {
+        Optional<TMDBMovies> optionalTmdbMovies = searchedMovies.getResults().stream().filter(ele -> ele.getTitle().equalsIgnoreCase(title)).findFirst();
+        if(optionalTmdbMovies.isEmpty()){
+            return new ArrayList<>();
+        }
+        else{
+            TMDBMovies tmdbMovies = optionalTmdbMovies.get();
+            List<UserRecom> userRecoms = userRepo.findByUserEmailAndMovieId(email, tmdbMovies.getId()).get();
+            List<UserRecom> userRecom = userRecoms.stream().filter(ele -> ele.getIsLiked().equalsIgnoreCase("true")).collect(Collectors.toList());
+            if(!userRecom.isEmpty()){
+                tmdbMovies.setIsLiked("true");
+            }
+            else{
+                tmdbMovies.setIsLiked("false");
+            }
+
+            List<UserRecom> all = userRepo.findByIsLikedAndMovieId("true", tmdbMovies.getId()).get();
+            List<UserRecom> countList = new ArrayList<>();
+
+            all.stream().forEach(ele->{
+                if(countList.isEmpty()){
+                    countList.add(ele);
+                }
+                else{
+                    if(!countList.stream().anyMatch(item->item.getMovieId().equalsIgnoreCase(ele.getMovieId())&&item.getUserEmail().equalsIgnoreCase(ele.getUserEmail()))){
+                        countList.add(ele);
+                    }
+                }
+            });
+
+            if(!countList.isEmpty()){
+                tmdbMovies.setLikeCount(countList.size()+"");
+            }
+            else{
+                tmdbMovies.setLikeCount("");
+            }
+            return List.of(tmdbMovies);
+        }
+    }
+
 }

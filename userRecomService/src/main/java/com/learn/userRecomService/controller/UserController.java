@@ -37,6 +37,12 @@ public class UserController {
         return new ResponseEntity<>(userService.getAllComments(movieId),HttpStatus.OK);
     }
 
+    @GetMapping("/movies/search/{title}")
+    public ResponseEntity<?> getSearchedMovie(@PathVariable String title,@RequestHeader String email){
+        TMDBData searchedMovie = apiFeingClient.getSearchedMovie(title);
+        return new ResponseEntity<>(userService.getSearchedMovie(searchedMovie,email,title),HttpStatus.OK);
+    }
+
     @PostMapping("/movies/addFav")
     public ResponseEntity<?> setFav(@RequestHeader String email,@RequestBody UserRecom userRecom){
         userService.setFav(email,userRecom);
