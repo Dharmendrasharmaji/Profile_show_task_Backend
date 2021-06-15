@@ -14,7 +14,7 @@ public class GlobalExceptionHandler {
     }
 
     @ExceptionHandler(UserNotFoundException.class)
-    public ResponseEntity<?> alreadyExists(UserNotFoundException exception){
+    public ResponseEntity<?> userNotFound(UserNotFoundException exception){
         return new ResponseEntity<>(exception.getMessage(), HttpStatus.UNAUTHORIZED);
     }
 }

@@ -32,7 +32,7 @@ public class UserServiceImpl implements UserService{
     @Override
     public User userRegister(User user) {
         if(userRepo.findByEmail(user.getEmail().toLowerCase()).isPresent()){
-            throw new UserAlreadyExistsException("User with given email is already present.");
+            throw new UserAlreadyExistsException("Email already exists");
         }
         String uuid = UUID.randomUUID().toString();
         user.setId(uuid);
@@ -45,10 +45,10 @@ public class UserServiceImpl implements UserService{
         userCredentials.setEmail(userCredentials.getEmail().toLowerCase());
         Optional<User> userCheck = userRepo.findByEmail(userCredentials.getEmail());
         if (userCheck.isEmpty()){
-            throw new UserNotFoundException("User with given email doesn't exist.");
+            throw new UserNotFoundException("Email not found.");
         }
         if (!userCheck.get().getPassword().equals(userCredentials.getPassword())){
-            throw new UserNotFoundException("Passoword mismatch");
+            throw new UserNotFoundException("Password mismatch.");
         }
 
         String token = jwtGeneratorService.generateToken(userCredentials.getEmail());

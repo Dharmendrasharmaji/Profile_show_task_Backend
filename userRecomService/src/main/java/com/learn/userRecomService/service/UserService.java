@@ -13,7 +13,7 @@ public interface UserService {
 
     UserRecom saveUser(UserRecom userRecom);
 
-    List<UserRecom> getAuthUser(String email);
+    List<TMDBMovies> getAuthUser(String email);
 
     List<UserRecom> getAllComments(String movieId);
 

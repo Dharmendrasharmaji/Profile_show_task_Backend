@@ -4,6 +4,7 @@ import com.learn.userRecomService.model.TMDBData;
 import com.learn.userRecomService.model.TMDBMovies;
 import com.learn.userRecomService.model.UserRecom;
 import com.learn.userRecomService.repository.UserRepo;
+import org.apache.catalina.User;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -37,8 +38,9 @@ public class UserServiceImpl implements UserService{
     }
 
     @Override
-    public List<UserRecom> getAuthUser(String email) {
+    public List<TMDBMovies> getAuthUser(String email) {
         List<UserRecom> favList = new ArrayList<>();
+        List<TMDBMovies> favouriteList = new ArrayList<>();
         Optional<List<UserRecom>> user = userRepo.findByUserEmailAndIsFavourite(email,"true");
 
         if(!user.get().isEmpty()){
@@ -53,7 +55,30 @@ public class UserServiceImpl implements UserService{
 
                 }
             });
-            return favList;
+
+            favList.forEach(ele->{
+
+                List<UserRecom> aTrue = userRepo.findByIsLikedAndMovieId("true", ele.getMovieId()).get();
+                List<UserRecom> countlist=new ArrayList<>();
+                aTrue.forEach(item->{
+                    if(countlist.isEmpty()){
+                       countlist.add(item);
+                    }
+                    else{
+                        if(!countlist.stream().anyMatch(data->data.getUserEmail().equalsIgnoreCase(item.getUserEmail())&&data.getMovieId().equalsIgnoreCase(item.getMovieId()))){
+                            countlist.add(item);
+                        }
+                    }
+                });
+                if(!countlist.isEmpty()) {
+                    favouriteList.add(new TMDBMovies(ele.getMovieId(), ele.getTitle(), ele.getRating(), ele.getDescription(), ele.getPosterUrl(), ele.getIsLiked(), countlist.size() + "", ele.getIsFavourite(), ele.getIsRecommended()));
+                }else{
+                    favouriteList.add(new TMDBMovies(ele.getMovieId(),ele.getTitle(),ele.getRating(),ele.getDescription(),ele.getPosterUrl(),ele.getIsLiked(),"",ele.getIsFavourite(),ele.getIsRecommended()));
+
+                }
+
+            });
+            return favouriteList;
         }
 //        throw new UserWithGivenEmailNotExistException("User with given email doesn't exist.");
         return new ArrayList<>();
