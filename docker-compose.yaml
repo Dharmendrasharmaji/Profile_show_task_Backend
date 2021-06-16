@@ -1,0 +1,86 @@
+version: "3.6"
+services:
+  discovery-service:
+    image: discoveryserviceimg
+    build: ./discovery
+    ports:
+    - 8762:8762
+    restart: on-failure
+    networks:
+      moviecruiser-api-network:
+
+  apigateway-service:
+    image: apigatewayimg
+    build: ./api-gateway
+    ports:
+      - 8765:8765
+    environment:
+      EUREKA_HOST: discovery-service
+    depends_on:
+      - discovery-service
+    restart: on-failure
+    networks:
+      moviecruiser-api-network:
+
+  userRecom-service:
+    image: userrecomserviceimg
+    build: ./userRecomService
+    ports:
+     - 8081:8081
+    environment:
+      MONGO_HOST: mongodb
+      MONGO_PORT: 27017
+      EUREKA_HOST: discovery-service
+    depends_on:
+        - mongodb
+        - discovery-service
+        - apigateway-service
+    restart: on-failure
+    networks:
+        moviecruiser-api-network:
+
+  mongodb:
+    image: mongo:4.0.25
+    ports:
+     - 27017:27017
+
+    networks:
+      moviecruiser-api-network:
+
+
+
+  useraccount-service:
+    image: useraccountimg
+    build: ./useraccount
+    ports:
+     - 8082:8082
+    environment:
+      MYSQL_HOST: mysqldb
+      MYSQL_USER: root
+      MYSQL_PASSWORD: pass123
+      MYSQL_PORT: 3306
+      EUREKA_HOST: discovery-service
+    depends_on:
+      - mysqldb
+      - discovery-service
+      - apigateway-service
+    restart: on-failure
+    networks:
+      moviecruiser-api-network:
+
+  mysqldb:
+    image: mysql:8.0.24
+    ports:
+      - 3309:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: pass123
+      MYSQL_DATABASE: user_account_db
+    networks:
+      moviecruiser-api-network:
+
+
+
+
+
+networks:
+  moviecruiser-api-network:

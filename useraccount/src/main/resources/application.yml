@@ -10,19 +10,19 @@ eureka:
     register-with-eureka: true
     fetch-registry: true
     serviceUrl:
-      defaultZone: http://localhost:8762/eureka/
+      defaultZone: http://${EUREKA_HOST:localhost}:8762/eureka/
   instance:
     preferIpAddress: true
 
 jwt:
   secret:
-    key: secretKey
+    key: ${JWT_SECRET:secretKey}
 
 Spring:
   datasource:
-    url: jdbc:mysql://localhost:3306/useraccount_db?createDatabaseIfNotExist=true
-    username: root
-    password: root123
+    url: jdbc:mysql://${MYSQL_HOST:localhost}:${MYSQL_PORT:3306}/${MYSQL_DB:useraccount_db}?createDatabaseIfNotExist=true
+    username: ${MYSQL_USER:root}
+    password: ${MYSQL_PASSWORD:root123}
     driver-class-name: com.mysql.cj.jdbc.Driver
   jpa:
     hibernate:
