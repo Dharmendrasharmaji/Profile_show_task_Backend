@@ -55,4 +55,45 @@ public class UserServiceImpl implements UserService{
 
         return Map.of("token",token);
     }
+
+    @Override
+    public User getUserData(String email) {
+        if (email==null){
+            throw new UserNotFoundException("Email is not provided");
+        }
+        else if(userRepo.findByEmail(email.toLowerCase()).isEmpty()){
+            throw new UserNotFoundException("Email doesn't exist");
+        }
+
+
+
+        return userRepo.findByEmail(email.toLowerCase()).get();
+    }
+
+    @Override
+    public byte[] getUserImage(String email) {
+        if (email==null){
+            throw new UserNotFoundException("Email is not provided");
+        }
+        else if(userRepo.findByEmail(email.toLowerCase()).isEmpty()){
+            throw new UserNotFoundException("Email doesn't exist");
+        }
+        User user = userRepo.findByEmail(email.toLowerCase()).get();
+        byte[] image = user.getImage();
+        return image;
+    }
+
+    @Override
+    public User updateProfile(User user) {
+        User savedUser=null;
+        User userDB = userRepo.findByEmail(user.getEmail().toLowerCase()).get();
+        if(userRepo.findByEmail(user.getEmail().toLowerCase()).isPresent()) {
+            user.setId(userDB.getId());
+            if (user.getImage()==null){
+                user.setImage(userDB.getImage());
+            }
+            savedUser = userRepo.save(user);
+        }
+        return savedUser;
+    }
 }

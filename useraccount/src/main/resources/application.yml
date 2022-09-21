@@ -4,13 +4,18 @@ server:
 spring:
   application:
     name: user-account
+  http:
+    multipart:
+      max-file-size:  15MB
+      max-request-size: 15MB
+      enabled: true
 
 eureka:
   client:
     register-with-eureka: true
     fetch-registry: true
     serviceUrl:
-      defaultZone: http://${EUREKA_HOST:localhost}:8762/eureka/
+      defaultZone: http://${EUREKA_HOST:localhost}:8761/eureka/
   instance:
     preferIpAddress: true
 
@@ -28,3 +33,4 @@ Spring:
     hibernate:
       ddl-auto: update
     show-sql: true
+
